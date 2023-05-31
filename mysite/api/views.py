@@ -65,15 +65,16 @@ def post(request):
         return JsonResponse({'results': results})
     elif request.method == 'POST':
         # 创建帖子
-        title = request.POST.get('title')
-        content_type = request.POST.get('content_type')
-        text = request.POST.get('text')
-        media_url = request.POST.get('media_url')
-        location_x = request.POST.get('location_x')
-        location_y = request.POST.get('location_y')
+        title = request.POST.get('title', '')
+        content_type = request.POST.get('content_type', '')
+        text = request.POST.get('text', '')
+        media_url = request.POST.get('media_url', '')
+        location_x = request.POST.get('location_x', '')
+        location_y = request.POST.get('location_y', '')
         post = Post(title=title, content_type=content_type, text=text, media_url=media_url, location_x=location_x, location_y=location_y)
         post.save()
         return JsonResponse({'code': 0})
+
 
 
 def post_detail(request, post_id):

@@ -36,15 +36,16 @@ def login(request):
 
         if not username or not password:
             return JsonResponse({'error': 'Username and password are required.'}, status=400)
-        # user = authenticate(request, username=username, password=password)
-
-        if user is not None:
-            login(request, user)
+        try:
+            user = User.objects.get(username=username, password=password)
+            # 如果找到匹配的用户，则返回一个成功的响应
             return JsonResponse({'code': 0})
-        else:
+        except User.DoesNotExist:
+            # 如果找不到匹配的用户，则返回一个401响应
             return JsonResponse({'error': 'Invalid username or password.'}, status=401)
     else:
         return JsonResponse({'error': 'Invalid request method.'}, status=405)
+
 
 def post(request):
     if request.method == 'GET':

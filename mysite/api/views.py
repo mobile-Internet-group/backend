@@ -1,45 +1,51 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from .models import Post,User
+from .models import Post,User,Comment
 # Create your views here.
 from django.contrib.auth import authenticate, login
 
-@csrf_exempt
+
 def register(request):
     if request.method == 'POST':
         # 用户注册
         username = request.POST.get('username')
         password = request.POST.get('password')
 
+        print(request.POST)
+        print(username)
+        print(password)
+
         if not username or not password:
             return JsonResponse({'error': 'Username, password and email are required.'}, status=400)
         if User.objects.filter(username=username).exists():
             return JsonResponse({'error': 'Username already exists.'}, status=400)
-        user = User.objects.create_user(username=username, password=password)
+        user = User(username=username, password=password)
         user.save()
-        return JsonResponse({'status': 'success'})
+        return JsonResponse({'code': 0})
     else:
         return JsonResponse({'error': 'Invalid request method.'}, status=405)
 
-@csrf_exempt
 def login(request):
     if request.method == 'POST':
         # 用户登录
         username = request.POST.get('username')
         password = request.POST.get('password')
+
+        print(username)
+        print(password)
+
         if not username or not password:
             return JsonResponse({'error': 'Username and password are required.'}, status=400)
-        user = authenticate(request, username=username, password=password)
+        # user = authenticate(request, username=username, password=password)
+
         if user is not None:
             login(request, user)
-            return JsonResponse({'status': 'success'})
+            return JsonResponse({'code': 0})
         else:
             return JsonResponse({'error': 'Invalid username or password.'}, status=401)
     else:
         return JsonResponse({'error': 'Invalid request method.'}, status=405)
 
-@csrf_exempt
 def post(request):
     if request.method == 'GET':
         # 查询帖子
@@ -66,9 +72,9 @@ def post(request):
         location_y = request.POST.get('location_y')
         post = Post(title=title, content_type=content_type, text=text, media_url=media_url, location_x=location_x, location_y=location_y)
         post.save()
-        return JsonResponse({'status': 'success'})
+        return JsonResponse({'code': 0})
 
-@csrf_exempt
+
 def post_detail(request, post_id):
     try:
         post = Post.objects.get(id=post_id)
@@ -100,13 +106,9 @@ def post_detail(request, post_id):
         post.location_x = location_x if location_x else post.location_x
         post.location_y = location_y if location_y else post.location_y
         post.save()
-        return JsonResponse({'status': 'success'})
+        return JsonResponse({'code': 0})
 
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from .models import Comment
 
-@csrf_exempt
 def comment(request, post_id):
     if request.method == 'GET':
         # 查看评论
@@ -128,6 +130,6 @@ def comment(request, post_id):
             return JsonResponse({'error': 'Content type and text are required.'}, status=400)
         comment = Comment(content_type=content_type, media_url=media_url, text=text, post_id=post_id)
         comment.save()
-        return JsonResponse({'status': 'success'})
+        return JsonResponse({'code': 0})
     else:
         return JsonResponse({'error': 'Invalid request method.'}, status=405)

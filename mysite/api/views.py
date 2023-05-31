@@ -11,12 +11,12 @@ def register(request):
         # 用户注册
         username = request.POST.get('username')
         password = request.POST.get('password')
-        email = request.POST.get('email')
-        if not username or not password or not email:
+
+        if not username or not password:
             return JsonResponse({'error': 'Username, password and email are required.'}, status=400)
         if User.objects.filter(username=username).exists():
             return JsonResponse({'error': 'Username already exists.'}, status=400)
-        user = User.objects.create_user(username=username, password=password, email=email)
+        user = User.objects.create_user(username=username, password=password)
         user.save()
         return JsonResponse({'status': 'success'})
     else:

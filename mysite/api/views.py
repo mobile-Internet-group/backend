@@ -53,7 +53,6 @@ def post(request):
         for post in posts:
             result = {
                 'postid':post.postid,
-                'username':post.username,
                 'title': post.title,
                 'content_type': post.content_type,
                 'text': post.text,

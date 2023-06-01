@@ -9,6 +9,8 @@ class User(models.Model):
         return self.username
     
 class Post(models.Model):
+    postid = models.AutoField(primary_key=True)
+    username = models.ForeignKey(User,on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     content_type = models.IntegerField(default=0) #0 or 1
     text = models.CharField(max_length=200)
@@ -19,6 +21,8 @@ class Post(models.Model):
         return self.title
     
 class Comment(models.Model):
+    commentid = models.AutoField(primary_key=True)
+    postid = models.ForeignKey(Post,on_delete=models.CASCADE)
     content_type = models.CharField(max_length=200)
     media_url = models.CharField(max_length=200)
     text = models.CharField(max_length=200)

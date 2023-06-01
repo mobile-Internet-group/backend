@@ -112,14 +112,11 @@ def post_detail(request, postid):
         post.save()
         return JsonResponse({'code': 0})
 
-
-#def comment(request, postid):
-def comment(request):
-
+def comment(request, postid):
     if request.method == 'GET':
         # 查看评论
         print(request)
-        post = Post.objects.get(postid=0)
+        post = Post.objects.get(postid=postid)
         comments = Comment.objects.filter(post=post)
         result = []
         for comment in comments:

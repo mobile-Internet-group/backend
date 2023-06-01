@@ -1,6 +1,13 @@
 # backend
 A django Backend to deal with multiple apis.
 
+# requirment
+```
+pip install django
+pip install django-rest-framework
+pip install django-cors-headers
+cnpm install axios
+```
 # User Module 用户模块
 ## POST  用户注册
 - /api/user/register

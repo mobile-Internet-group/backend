@@ -66,13 +66,14 @@ def post(request):
     elif request.method == 'POST':
         # 创建帖子
         username = request.POST.get('username','')
+        user = User.objects.get(username = username)
         title = request.POST.get('title', '')
         content_type = request.POST.get('content_type', '')
         text = request.POST.get('text', '')
         media_url = request.POST.get('media_url', '')
         location_x = request.POST.get('location_x', '')
         location_y = request.POST.get('location_y', '')
-        post = Post(username=username,title=title, content_type=content_type, text=text, media_url=media_url, location_x=location_x, location_y=location_y)
+        post = Post(user=user,title=title, content_type=content_type, text=text, media_url=media_url, location_x=location_x, location_y=location_y)
         post.save()
         return JsonResponse({'code': 0})
 
@@ -87,7 +88,6 @@ def post_detail(request, post_id):
         # 显示某个帖子的具体信息
         result = {
             'postid':post.postid,
-            'username':post.username,
             'title': post.title,
             'content_type': post.content_type,
             'text': post.text,
@@ -98,14 +98,12 @@ def post_detail(request, post_id):
         return JsonResponse(result)
     elif request.method == 'PUT':
         # 更新某个帖子
-        username = request.POST.get('username','')
         title = request.POST.get('title', '')
         content_type = request.POST.get('content_type', '')
         text = request.POST.get('text', '')
         media_url = request.POST.get('media_url', '')
         location_x = request.POST.get('location_x', '')
         location_y = request.POST.get('location_y', '')
-        post.username = username if username else post.username
         post.title = title if title else post.title
         post.content_type = content_type if content_type else post.content_type
         post.text = text if text else post.text
@@ -116,15 +114,15 @@ def post_detail(request, post_id):
         return JsonResponse({'code': 0})
 
 
-def comment(request, post_id):
+def comment(request, postid):
     if request.method == 'GET':
         # 查看评论
-        comments = Comment.objects.filter(postid=post_id)
+        post = Post.objects.get(postid=postid)
+        comments = Comment.objects.filter(post=post)
         result = []
         for comment in comments:
             result.append({
                 'commentid':comment.commentid,
-                'postid':comment.postid,
                 'content_type': comment.content_type,
                 'media_url': comment.media_url,
                 'text': comment.text
@@ -133,12 +131,13 @@ def comment(request, post_id):
     elif request.method == 'POST':
         # 创建评论
         postid = request.POST.get('postid')
+        post = Post.objects.get(postid=postid)
         content_type = request.POST.get('content_type')
         media_url = request.POST.get('media_url')
         text = request.POST.get('text')
         if not content_type or not text:
             return JsonResponse({'error': 'Content type and text are required.'}, status=400)
-        comment = Comment(postid=postid,content_type=content_type, media_url=media_url, text=text, post_id=post_id)
+        comment = Comment(post=post,content_type=content_type, media_url=media_url, text=text)
         comment.save()
         return JsonResponse({'code': 0})
     else:

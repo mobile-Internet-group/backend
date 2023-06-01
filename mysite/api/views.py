@@ -78,9 +78,9 @@ def post(request):
 
 
 
-def post_detail(request, post_id):
+def post_detail(request, postid):
     try:
-        post = Post.objects.get(id=post_id)
+        post = Post.objects.get(id=postid)
     except Post.DoesNotExist:
         return JsonResponse({'error': 'Post does not exist'}, status=404)
     if request.method == 'GET':
@@ -113,10 +113,13 @@ def post_detail(request, post_id):
         return JsonResponse({'code': 0})
 
 
-def comment(request, postid):
+#def comment(request, postid):
+def comment(request):
+
     if request.method == 'GET':
         # 查看评论
-        post = Post.objects.get(postid=postid)
+        print(request)
+        post = Post.objects.get(postid=0)
         comments = Comment.objects.filter(post=post)
         result = []
         for comment in comments:

@@ -10,7 +10,7 @@ class User(models.Model):
     
 class Post(models.Model):
     postid = models.AutoField(primary_key=True,default=0)
-    username = models.ForeignKey(User,on_delete=models.CASCADE)
+    username = models.ForeignKey(User.username,on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     content_type = models.IntegerField(default=0) #0 or 1
     text = models.CharField(max_length=200)
@@ -22,7 +22,7 @@ class Post(models.Model):
     
 class Comment(models.Model):
     commentid = models.AutoField(primary_key=True,default=0)
-    postid = models.ForeignKey(Post,on_delete=models.CASCADE)
+    postid = models.ForeignKey(Post.postid,on_delete=models.CASCADE)
     content_type = models.CharField(max_length=200)
     media_url = models.CharField(max_length=200)
     text = models.CharField(max_length=200)

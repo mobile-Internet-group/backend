@@ -80,7 +80,7 @@ def post(request):
 
 def post_detail(request, postid):
     try:
-        post = Post.objects.get(id=postid)
+        post = Post.objects.get(postid=postid)
     except Post.DoesNotExist:
         return JsonResponse({'error': 'Post does not exist'}, status=404)
     if request.method == 'GET':
